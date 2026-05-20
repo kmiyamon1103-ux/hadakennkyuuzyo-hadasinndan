@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>肌研究所 ｜ 肌状態から原因を分析するスキンケア診断</title>
+  <meta name="description" content="今の肌状態を分析し、原因・不足している役割・必要な成分・おすすめのスキンケア方法を提案する診断サイト「肌研究所」。" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 背景レイヤー -->
+  <div class="bg-layer" aria-hidden="true"></div>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <main class="container">
+
+    <!-- ====== ⓪ パスワード認証画面 ====== -->
+    <section id="screen-gate" class="screen screen-active">
+      <div class="glass-card gate-card">
+        <p class="brand-mark">SKIN LABORATORY</p>
+        <h1 class="gate-title">肌研究所</h1>
+        <p class="gate-subtitle">― Members Only ―</p>
+
+        <p class="gate-lead">
+          このサイトは限定公開中です。<br>
+          パスワードを入力してください。
+        </p>
+
+        <form id="gateForm" class="gate-form" autocomplete="off">
+          <input
+            id="gatePassword"
+            type="password"
+            class="gate-input"
+            placeholder="PASSWORD"
+            inputmode="numeric"
+            autocomplete="off"
+            aria-label="パスワード"
+          />
+          <button type="submit" class="btn-primary gate-btn">解錠する</button>
+        </form>
+
+        <p id="gateError" class="gate-error" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- ====== ① トップ画面 ====== -->
+    <section id="screen-top" class="screen">
+      <div class="glass-card top-card">
+        <p class="brand-mark">SKIN LABORATORY</p>
+        <h1 class="site-title">肌研究所</h1>
+        <p class="site-subtitle">〜 肌状態から原因を分析するスキンケア診断 〜</p>
+
+        <p class="top-lead">
+          “攻める美容” ではなく、<br>
+          いまの肌に本当に必要なケアを見つける。
+        </p>
+
+        <button id="startBtn" class="btn-primary" type="button">
+          診断をはじめる
+        </button>
+
+        <ul class="top-meta">
+          <li>所要時間：約 1〜2分</li>
+          <li>全 7問</li>
+          <li>登録不要</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ====== ② 診断画面 ====== -->
+    <section id="screen-quiz" class="screen">
+      <div class="glass-card quiz-card">
+
+        <div class="quiz-header">
+          <p class="quiz-step"><span id="stepNow">1</span> / <span id="stepAll">7</span></p>
+          <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+        </div>
+
+        <h2 id="questionText" class="question-text">質問が入ります</h2>
+        <p id="questionHint" class="question-hint"></p>
+
+        <div id="optionsArea" class="options-area">
+          <!-- JSで選択肢を描画 -->
+        </div>
+
+        <div class="quiz-footer">
+          <button id="backBtn" class="btn-ghost" type="button">← 戻る</button>
+          <button id="nextBtn" class="btn-primary btn-next" type="button" disabled>次へ →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== ③ 診断結果画面 ====== -->
+    <section id="screen-result" class="screen">
+      <div class="result-wrap">
+
+        <div class="glass-card result-head">
+          <p class="result-label">RESULT</p>
+          <h2 class="result-title">あなたの肌状態レポート</h2>
+          <p id="resultLead" class="result-lead">分析結果を表示します。</p>
+        </div>
+
+        <div class="glass-card result-block">
+          <h3 class="block-title"><span class="block-no">01</span> 肌状態分析</h3>
+          <p id="analysisText" class="block-text"></p>
+        </div>
+
+        <div class="glass-card result-block">
+          <h3 class="block-title"><span class="block-no">02</span> 原因分析</h3>
+          <p id="causeText" class="block-text"></p>
+        </div>
+
+        <div class="result-block-plain">
+          <h3 class="block-title"><span class="block-no">03</span> 必要な成分</h3>
+          <div id="ingredientCards" class="ingredient-grid"></div>
+        </div>
+
+        <div class="glass-card result-block">
+          <h3 class="block-title"><span class="block-no">04</span> おすすめスキンケア方法</h3>
+          <div id="careList" class="care-list"></div>
+        </div>
+
+        <div class="result-actions">
+          <button id="retryBtn" class="btn-primary" type="button">もう一度診断する</button>
+          <button id="topBtn" class="btn-ghost" type="button">トップに戻る</button>
+        </div>
+
+        <p class="disclaimer">
+          ※本診断は医療行為ではありません。肌トラブルが続く場合は皮膚科専門医にご相談ください。
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <small>© 肌研究所 / Skin Laboratory</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

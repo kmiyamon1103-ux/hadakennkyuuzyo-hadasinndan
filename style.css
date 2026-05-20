@@ -1,0 +1,671 @@
+/* ============================================================
+   肌研究所 - Skin Laboratory
+   style.css
+   ============================================================ */
+
+/* ---------- カラー変数 ---------- */
+:root {
+  --c-text:        #2b2f33;       /* 文字色：黒すぎない墨色 */
+  --c-text-sub:    #5a6068;       /* サブ文字 */
+  --c-accent:      #6f8aa3;       /* 淡いブルーグレー */
+  --c-accent-dp:   #4d6b87;       /* アクセント濃いめ */
+  --c-beige:       #e8dfd2;       /* 淡いベージュ */
+  --c-line:        rgba(120,130,140,0.25);
+
+  /* ガラス */
+  --glass-bg:      rgba(255,255,255,0.55);
+  --glass-bg-soft: rgba(255,255,255,0.40);
+  --glass-border:  rgba(255,255,255,0.65);
+  --glass-shadow:  0 20px 50px rgba(60, 80, 100, 0.18);
+
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+}
+
+/* ---------- リセット ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Zen Kaku Gothic New", "Noto Sans JP",
+               "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-weight: 500;
+  color: var(--c-text);
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  background-color: #f4f1ec;
+}
+
+/* ---------- 背景画像 ＋ オーバーレイ ---------- */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  background-image: url("images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -2;
+}
+
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.78) 0%,
+    rgba(255,255,255,0.62) 50%,
+    rgba(255,255,255,0.78) 100%
+  );
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: -1;
+}
+
+/* ---------- レイアウト ---------- */
+.container {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 24px 40px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen {
+  display: none;
+  width: 100%;
+  animation: fadeUp 0.6s ease both;
+}
+.screen-active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- ガラスカード ---------- */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  padding: 48px 44px;
+}
+
+/* ============================================================
+   ⓪ パスワード認証画面
+   ============================================================ */
+.gate-card {
+  text-align: center;
+  padding: 64px 44px;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.gate-title {
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--c-text);
+  margin: 12px 0 6px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.gate-subtitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  color: var(--c-accent-dp);
+  margin-bottom: 28px;
+}
+
+.gate-lead {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text-sub);
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+.gate-input {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.4em;
+  text-align: center;
+  color: var(--c-text);
+  background: rgba(255,255,255,0.7);
+  border: 1.5px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 16px 24px;
+  width: 100%;
+  max-width: 320px;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.gate-input::placeholder {
+  color: #9aa3ad;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+}
+
+.gate-input:focus {
+  border-color: var(--c-accent-dp);
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 0 0 4px rgba(111,138,163,0.18);
+}
+
+.gate-btn {
+  width: 100%;
+  max-width: 320px;
+  padding: 16px 32px;
+}
+
+.gate-error {
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #c0504d;
+  min-height: 1.4em;
+  letter-spacing: 0.05em;
+}
+
+/* シェイクアニメーション（パスワード誤り時） */
+.shake {
+  animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+/* ============================================================
+   ① トップ画面
+   ============================================================ */
+.top-card {
+  text-align: center;
+  padding: 64px 44px;
+}
+
+.brand-mark {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  color: var(--c-accent-dp);
+  margin-bottom: 18px;
+}
+
+.site-title {
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--c-text);
+  margin-bottom: 14px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.site-subtitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-sub);
+  letter-spacing: 0.05em;
+  margin-bottom: 36px;
+}
+
+.top-lead {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--c-text);
+  margin-bottom: 40px;
+}
+
+.top-meta {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-text-sub);
+  letter-spacing: 0.08em;
+}
+.top-meta li {
+  position: relative;
+}
+.top-meta li::before {
+  content: "●";
+  margin-right: 6px;
+  color: var(--c-accent);
+  font-size: 9px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   ボタン
+   ============================================================ */
+.btn-primary {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: linear-gradient(135deg, #6f8aa3 0%, #4d6b87 100%);
+  border: none;
+  border-radius: 999px;
+  padding: 18px 56px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(77,107,135,0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(77,107,135,0.38);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text-sub);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  padding: 14px 28px;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.85);
+  color: var(--c-text);
+}
+
+/* ============================================================
+   ② 診断画面
+   ============================================================ */
+.quiz-card { padding: 44px 44px 36px; }
+
+.quiz-header {
+  margin-bottom: 28px;
+}
+
+.quiz-step {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--c-accent-dp);
+  margin-bottom: 10px;
+}
+.quiz-step span { font-size: 16px; }
+
+.progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(120,130,140,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #b9c8d7 0%, #6f8aa3 100%);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.question-text {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--c-text);
+  letter-spacing: 0.03em;
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.question-hint {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-accent-dp);
+  margin-bottom: 28px;
+  letter-spacing: 0.05em;
+}
+
+.options-area {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.option-btn {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  color: var(--c-text);
+  background: rgba(255,255,255,0.60);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.option-btn::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--c-accent);
+  background: #fff;
+  flex-shrink: 0;
+  transition: background 0.25s, box-shadow 0.25s;
+}
+
+.option-btn:hover {
+  background: rgba(255,255,255,0.85);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(80,100,120,0.12);
+}
+
+.option-btn.selected {
+  background: rgba(207,222,235,0.78);
+  border-color: var(--c-accent-dp);
+  box-shadow: 0 8px 22px rgba(77,107,135,0.22);
+}
+
+.option-btn.selected::before {
+  background: var(--c-accent-dp);
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.quiz-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.btn-next { padding: 16px 40px; }
+
+/* ============================================================
+   ③ 診断結果画面
+   ============================================================ */
+.result-wrap {
+  display: grid;
+  gap: 22px;
+}
+
+.result-head {
+  text-align: center;
+  padding: 48px 40px;
+}
+.result-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.45em;
+  color: var(--c-accent-dp);
+  margin-bottom: 14px;
+}
+.result-title {
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+.result-lead {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-sub);
+  line-height: 1.85;
+}
+
+.result-block { padding: 36px 36px; }
+.result-block-plain { padding: 4px 0; }
+
+.block-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--c-text);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-line);
+}
+.block-no {
+  display: inline-block;
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #fff;
+  background: var(--c-accent-dp);
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+}
+
+.block-text {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.9;
+  color: var(--c-text);
+}
+
+/* 必要な成分カード */
+.ingredient-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.ingredient-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 24px 22px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 26px rgba(77,107,135,0.14);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.ingredient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(77,107,135,0.20);
+}
+.ingredient-name {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--c-accent-dp);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+.ingredient-role {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: 6px;
+}
+.ingredient-target {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-sub);
+  line-height: 1.7;
+}
+
+/* おすすめケアリスト */
+.care-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 6px;
+}
+.care-item {
+  background: rgba(255,255,255,0.55);
+  border-left: 4px solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+}
+.care-item h4 {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--c-text);
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.care-item ul {
+  list-style: none;
+  padding-left: 0;
+}
+.care-item li {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.85;
+  color: var(--c-text);
+  position: relative;
+  padding-left: 18px;
+}
+.care-item li::before {
+  content: "・";
+  position: absolute;
+  left: 0;
+  color: var(--c-accent-dp);
+  font-weight: 900;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-text-sub);
+  margin-top: 16px;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- フッター ---------- */
+.site-footer {
+  position: relative;
+  text-align: center;
+  padding: 24px 0 28px;
+  color: var(--c-text-sub);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+/* ============================================================
+   レスポンシブ（600px以下）
+   ============================================================ */
+@media (max-width: 600px) {
+  .container {
+    padding: 28px 14px 24px;
+  }
+
+  .glass-card {
+    padding: 32px 22px;
+    border-radius: 20px;
+  }
+
+  /* パスワード画面 */
+  .gate-card { padding: 42px 22px; }
+  .gate-title { font-size: 32px; letter-spacing: 0.1em; }
+  .gate-subtitle { font-size: 11px; }
+  .gate-lead { font-size: 13px; }
+  .gate-input { font-size: 16px; padding: 14px 20px; }
+
+  /* トップ画面 */
+  .top-card { padding: 42px 22px; }
+  .site-title { font-size: 40px; letter-spacing: 0.08em; }
+  .site-subtitle { font-size: 13px; }
+  .top-lead { font-size: 15px; }
+  .top-meta {
+    gap: 10px 18px;
+    font-size: 12px;
+  }
+
+  /* 診断画面 */
+  .quiz-card { padding: 28px 20px 24px; }
+  .question-text { font-size: 20px; }
+  .question-hint { font-size: 12px; margin-bottom: 22px; }
+  .option-btn {
+    font-size: 15px;
+    padding: 16px 18px;
+  }
+  .quiz-footer { gap: 8px; }
+  .btn-next { padding: 14px 28px; font-size: 15px; }
+  .btn-ghost { padding: 12px 20px; }
+
+  /* 結果画面 */
+  .result-head { padding: 36px 22px; }
+  .result-title { font-size: 22px; }
+  .result-lead { font-size: 14px; }
+  .result-block { padding: 28px 22px; }
+  .block-title { font-size: 16px; }
+  .block-text { font-size: 15px; }
+  .ingredient-grid { grid-template-columns: 1fr; gap: 12px; }
+  .ingredient-card { padding: 20px 20px; }
+
+  .btn-primary {
+    padding: 16px 32px;
+    font-size: 15px;
+    width: 100%;
+    max-width: 320px;
+  }
+  .result-actions .btn-ghost { width: 100%; max-width: 320px; }
+}
+
+/* タブレット中間サイズ */
+@media (min-width: 601px) and (max-width: 900px) {
+  .site-title { font-size: 48px; }
+  .glass-card { padding: 40px 36px; }
+}
