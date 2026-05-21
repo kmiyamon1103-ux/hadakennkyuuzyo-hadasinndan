@@ -13,12 +13,12 @@
    1. データ定義
    ============================================================ */
 
-/* Q1：主な悩み（ここで分岐する） */
+/* Q1：主な悩み（ここで分岐する・複数選択可） */
 const Q1 = {
   id: "q1_concern",
-  text: "今、一番気になることは？",
-  hint: "1つだけ選んでください",
-  type: "single",
+  text: "今、気になることは？",
+  hint: "あてはまるものをすべて選んでください（複数選択可）",
+  type: "multi",
   options: [
     { value: "redness",  label: "赤み・ヒリつき" },
     { value: "pores",    label: "毛穴" },
@@ -95,6 +95,28 @@ const Q2_BY_CONCERN = {
       { value: "always",  label: "最近ずっと" }
     ]
   }
+};
+
+/* Q2：複数悩み選択時の共通質問 */
+const Q2_GENERIC = {
+  text: "気になる症状はいつ感じる？",
+  options: [
+    { value: "morning", label: "朝起きたとき" },
+    { value: "wash",    label: "洗顔後" },
+    { value: "even",    label: "夕方〜夜" },
+    { value: "always",  label: "一日中" }
+  ]
+};
+
+/* 悩みラベル（結果表示用） */
+const CONCERN_LABELS = {
+  redness:  "赤み・ヒリつき",
+  pores:    "毛穴",
+  dryness:  "乾燥",
+  oily:     "テカリ・ベタつき",
+  acne:     "ニキビ・肌荒れ",
+  tone:     "肌トーン・透明感",
+  firmness: "ハリ・ツヤ不足"
 };
 
 /* Q3〜Q6：全分岐共通の生活・肌状態ヒアリング */
@@ -361,9 +383,17 @@ function showScreen(id) {
      （ボタン文言「次へ／結果を見る」の判定を正しくするため）
    ・Q1 を選び直したら Q2 が自動で組み替わる
    ============================================================ */
+function getSelectedConcerns() {
+  const ans = state.answers.q1_concern;
+  if (Array.isArray(ans) && ans.length > 0) return ans;
+  return ["redness"]; // 未選択時は仮置き（質問数・Q2文言の判定用）
+}
+
 function buildQuestionList() {
-  const concern = state.answers.q1_concern || "redness"; // 未選択時は仮置き
-  const q2def   = Q2_BY_CONCERN[concern];
+  const concerns = getSelectedConcerns();
+  const q2def = concerns.length === 1
+    ? Q2_BY_CONCERN[concerns[0]]
+    : Q2_GENERIC;
 
   const q2 = {
     id: "q2_when",
@@ -454,6 +484,11 @@ function handleSelect(q, opt, btn) {
       }
       state.answers[q.id] = next;
     }
+    // Q1（悩み）を選び直したら Q2 を組み替える
+    if (q.id === "q1_concern") {
+      buildQuestionList();
+    }
+
     // 再描画（複数選択の表示更新を簡単にするため）
     renderQuestion();
   }
@@ -500,9 +535,60 @@ function goBack() {
 /* ============================================================
    8. 結果表示
    ============================================================ */
+
+/* 成分を名前で重複排除 */
+function dedupeIngredients(items) {
+  const seen = new Set();
+  return items.filter((it) => {
+    if (seen.has(it.name)) return false;
+    seen.add(it.name);
+    return true;
+  });
+}
+
+/* ケア方法を工程ごとに統合（洗顔→化粧水→…の順） */
+function mergeCare(careArrays) {
+  const order = ["洗顔", "化粧水", "パック", "美容液", "クリーム"];
+  const map = new Map();
+
+  careArrays.flat().forEach((item) => {
+    if (!map.has(item.title)) map.set(item.title, new Set());
+    item.points.forEach((p) => map.get(item.title).add(p));
+  });
+
+  return order
+    .filter((title) => map.has(title))
+    .map((title) => ({
+      title,
+      points: Array.from(map.get(title)).slice(0, 3)
+    }));
+}
+
+/* 複数悩みの結果を統合 */
+function buildCombinedResult(concerns) {
+  const valid = concerns.filter((c) => RESULTS[c]);
+  if (valid.length === 0) return RESULTS.dryness;
+  if (valid.length === 1) return RESULTS[valid[0]];
+
+  const parts = valid.map((c) => RESULTS[c]);
+  const labels = valid.map((c) => CONCERN_LABELS[c]).join("・");
+
+  return {
+    lead:
+      `「${labels}」など、複数の悩みが重なっている可能性があります。` +
+      "今の肌に合うケアを、優先順位を意識して整えていきましょう。",
+    analysis: parts.map((r) => r.analysis).join("\n\n"),
+    cause: parts.map((r) => r.cause).join("\n\n"),
+    ingredients: dedupeIngredients(parts.flatMap((r) => r.ingredients)).slice(0, 6),
+    care: mergeCare(parts.map((r) => r.care))
+  };
+}
+
 function showResult() {
-  const concern = state.answers.q1_concern;
-  const r = RESULTS[concern] || RESULTS.dryness;
+  const concerns = Array.isArray(state.answers.q1_concern)
+    ? state.answers.q1_concern
+    : [state.answers.q1_concern].filter(Boolean);
+  const r = buildCombinedResult(concerns);
 
   document.getElementById("resultLead").textContent  = r.lead;
   document.getElementById("analysisText").textContent = r.analysis;

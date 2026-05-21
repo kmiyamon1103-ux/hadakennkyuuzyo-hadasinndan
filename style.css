@@ -493,6 +493,7 @@ body {
   font-weight: 500;
   line-height: 1.9;
   color: var(--c-text);
+  white-space: pre-line;
 }
 
 /* 必要な成分カード */
