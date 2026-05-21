@@ -669,3 +669,192 @@ body {
   .site-title { font-size: 48px; }
   .glass-card { padding: 40px 36px; }
 }
+
+/* ============================================================
+   印刷用スタイル（A4 1枚に診断結果を収める）
+   ============================================================ */
+@media print {
+
+  /* A4 縦・余白 10mm */
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  /* 背景・装飾・ナビゲーションを完全に消す */
+  .bg-layer,
+  .bg-overlay,
+  .site-footer,
+  #screen-gate,
+  #screen-top,
+  #screen-quiz,
+  .result-actions,
+  .disclaimer {
+    display: none !important;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 10pt;
+  }
+
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    display: block !important;
+  }
+
+  /* 結果画面は常に表示 */
+  #screen-result {
+    display: block !important;
+    animation: none !important;
+  }
+
+  /* ガラス効果を解除しシンプルな白ベースに */
+  .glass-card,
+  .ingredient-card,
+  .care-item {
+    background: #fff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid #cfd4da !important;
+    animation: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .result-wrap {
+    display: block !important;
+  }
+
+  .result-wrap > * {
+    margin-bottom: 6px !important;
+  }
+
+  /* ヘッダー */
+  .result-head {
+    padding: 10px 14px !important;
+    text-align: center;
+    border-radius: 6px !important;
+  }
+  .result-label {
+    font-size: 8pt;
+    letter-spacing: 0.3em;
+    margin-bottom: 4px;
+    color: #4d6b87 !important;
+  }
+  .result-title {
+    font-size: 16pt;
+    font-weight: 900;
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+  }
+  .result-lead {
+    font-size: 9pt;
+    line-height: 1.55;
+    color: #333 !important;
+    font-weight: 700;
+  }
+
+  /* 分析ブロック */
+  .result-block,
+  .result-block-plain {
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+  }
+  .result-block-plain {
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .block-title {
+    font-size: 11pt;
+    font-weight: 900;
+    margin-bottom: 5px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1px solid #cfd4da !important;
+    gap: 8px;
+  }
+  .block-no {
+    font-size: 7pt;
+    padding: 2px 6px !important;
+    background: #4d6b87 !important;
+    color: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .block-text {
+    font-size: 9pt;
+    line-height: 1.55;
+    color: #000 !important;
+    font-weight: 500;
+  }
+
+  /* 必要な成分：2列に圧縮 */
+  .ingredient-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 5px !important;
+    margin-top: 5px !important;
+  }
+  .ingredient-card {
+    padding: 6px 10px !important;
+    border-radius: 5px !important;
+  }
+  .ingredient-name {
+    font-size: 10pt;
+    font-weight: 900;
+    margin-bottom: 2px !important;
+    color: #4d6b87 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .ingredient-role {
+    font-size: 8.5pt;
+    margin-bottom: 1px !important;
+    font-weight: 700;
+  }
+  .ingredient-target {
+    font-size: 8pt;
+    color: #333 !important;
+    line-height: 1.45;
+  }
+
+  /* おすすめスキンケア：2列に圧縮 */
+  .care-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 5px !important;
+    margin-top: 4px;
+  }
+  .care-item {
+    padding: 6px 10px !important;
+    border-left: 3px solid #4d6b87 !important;
+    border-radius: 4px !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .care-item h4 {
+    font-size: 9.5pt;
+    font-weight: 900;
+    margin-bottom: 3px !important;
+  }
+  .care-item li {
+    font-size: 8pt;
+    line-height: 1.5;
+    padding-left: 10px !important;
+    font-weight: 500;
+  }
+  .care-item li::before {
+    color: #4d6b87 !important;
+  }
+
+  /* ページ全体の改ページ抑止 */
+  #screen-result {
+    page-break-after: avoid;
+  }
+}

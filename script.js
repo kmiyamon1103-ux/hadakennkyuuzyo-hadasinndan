@@ -606,4 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resetAll();
     showScreen("screen-top");
   });
+  document.getElementById("printBtn").addEventListener("click", () => {
+    window.print();
+  });
 });
