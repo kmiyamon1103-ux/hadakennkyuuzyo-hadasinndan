@@ -387,6 +387,9 @@ body {
   border-radius: var(--radius-md);
   padding: 18px 22px;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
   transition: transform 0.2s, background 0.25s, border-color 0.25s, box-shadow 0.25s;
   display: flex;
   align-items: center;

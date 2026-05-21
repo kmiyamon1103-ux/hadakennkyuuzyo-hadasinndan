@@ -4,7 +4,7 @@
    ------------------------------------------------------------
    ・トップ画面 → 診断画面 → 結果画面の切り替え
    ・Q1（主な悩み）で結果テンプレートを分岐
-   ・Q2〜Q6 は単一選択 / Q7 は複数選択
+   ・Q1・Q7 は複数選択 / Q2〜Q6 は単一選択
    ・回答は state.answers に蓄積
    ============================================================ */
 
@@ -30,7 +30,12 @@ const Q1 = {
   ]
 };
 
-/* Q2：悩みによって表現を変える「いつ気になる？」 */
+/* 複数選択の質問ID（type 判定のバックアップ） */
+const MULTI_QUESTION_IDS = ["q1_concern", "q7_recentcare"];
+
+function isMultiQuestion(q) {
+  return q.type === "multi" || MULTI_QUESTION_IDS.includes(q.id);
+}
 const Q2_BY_CONCERN = {
   redness: {
     text: "赤みはいつ気になる？",
@@ -438,14 +443,13 @@ function renderQuestion() {
     btn.dataset.value = opt.value;
 
     // 選択済みの再表示
-    if (q.type === "single" && current === opt.value) {
+    if (!isMultiQuestion(q) && current === opt.value) {
       btn.classList.add("selected");
     }
-    if (q.type === "multi" && Array.isArray(current) && current.includes(opt.value)) {
+    if (isMultiQuestion(q) && Array.isArray(current) && current.includes(opt.value)) {
       btn.classList.add("selected");
     }
 
-    btn.addEventListener("click", () => handleSelect(q, opt, btn));
     area.appendChild(btn);
   });
 
@@ -456,24 +460,24 @@ function renderQuestion() {
   updateNextButton();
 }
 
+function syncMultiSelectionUI(q) {
+  const selected = Array.isArray(state.answers[q.id]) ? state.answers[q.id] : [];
+  document.querySelectorAll("#optionsArea .option-btn").forEach((el) => {
+    el.classList.toggle("selected", selected.includes(el.dataset.value));
+  });
+}
+
 function handleSelect(q, opt, btn) {
-  if (q.type === "single") {
+  if (!isMultiQuestion(q)) {
     state.answers[q.id] = opt.value;
     document.querySelectorAll("#optionsArea .option-btn").forEach((b) => {
       b.classList.remove("selected");
     });
     btn.classList.add("selected");
-
-    // Q1（悩み）を選んだ瞬間に、分岐後の質問リストを組み立て直す
-    // → これで「次へ」ボタンの文言が「結果を見る」と誤表示されない
-    if (q.id === "q1_concern") {
-      buildQuestionList();
-    }
   } else {
-    // multi
     const cur = Array.isArray(state.answers[q.id]) ? state.answers[q.id] : [];
+
     if (opt.value === "none") {
-      // 「特に意識していない」はトグルで単独選択にする
       state.answers[q.id] = cur.includes("none") ? [] : ["none"];
     } else {
       let next = cur.filter((v) => v !== "none");
@@ -484,23 +488,24 @@ function handleSelect(q, opt, btn) {
       }
       state.answers[q.id] = next;
     }
-    // Q1（悩み）を選び直したら Q2 を組み替える
+
     if (q.id === "q1_concern") {
       buildQuestionList();
     }
 
-    // 再描画（複数選択の表示更新を簡単にするため）
-    renderQuestion();
+    // 画面全体を再描画せず選択状態だけ更新（スマホでも安定）
+    syncMultiSelectionUI(q);
   }
+
   updateNextButton();
 }
 
 function updateNextButton() {
   const q = state.questions[state.step];
   const ans = state.answers[q.id];
-  const ok = q.type === "single"
-    ? !!ans
-    : Array.isArray(ans) && ans.length > 0;
+  const ok = isMultiQuestion(q)
+    ? Array.isArray(ans) && ans.length > 0
+    : !!ans;
 
   const isLast = state.step === state.questions.length - 1;
   const nextBtn = document.getElementById("nextBtn");
@@ -682,8 +687,25 @@ function setupGate() {
   });
 }
 
+function setupOptionsArea() {
+  const area = document.getElementById("optionsArea");
+  area.addEventListener("click", (e) => {
+    const btn = e.target.closest(".option-btn");
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const q = state.questions[state.step];
+    if (!q) return;
+
+    const opt = q.options.find((o) => o.value === btn.dataset.value);
+    if (opt) handleSelect(q, opt, btn);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setupGate();
+  setupOptionsArea();
   document.getElementById("startBtn").addEventListener("click", startQuiz);
   document.getElementById("nextBtn").addEventListener("click", goNext);
   document.getElementById("backBtn").addEventListener("click", goBack);
